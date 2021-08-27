@@ -5,27 +5,48 @@ import ProductTable from './ProductTable';
 
 const FilterableProductTable = (props) => {
 
-const products = props.products;
+  // this.state = {
+  //   products: this.props.products,
+ 
+  //   inStock: [],
+  //   checkbox: false,
+    
 
+
+const products = props.products;
+const [inStock, setInStock] = useState([]);
 const [ query, setQuery ] = useState("");
 const [searchResults, setSearchResults] = useState([]);
+const [checkbox, setCheckbox ] = useState(false)
 
 
-const handleChange = (newQuery) => setQuery(newQuery)
-console.log("query", query)
+const searchProductQuery = (newQuery) => setQuery(newQuery)
 
+const handleStock = (event) => {
+  const inStockArray = []
+  searchResults.map(item => {
+    if(item.stocked){
+      inStockArray.push(item)
+    }
+  })
+    setInStock(inStockArray);
+    setCheckbox(event);   
+    
+ }
+
+ console.log("IN STOCK", inStock)
+ console.log("SETTED", checkbox) 
 
 useEffect(() => {
 const filtered = products.filter(item => item.name.toLowerCase().includes(query))
 setSearchResults(filtered);
 },[query])
 
-console.log("RESULTS", searchResults)
   return(
     <>
     <h1>IronStore</h1>
-      <SearchBar  filter={handleChange} />
-      <ProductTable  filtered={searchResults}/>
+      <SearchBar  filter={searchProductQuery} check={handleStock}/>
+      <ProductTable  filtered={searchResults} stocked={inStock} checkbox={checkbox}/>
    </>
   )
 }
